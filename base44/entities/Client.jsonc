@@ -1,0 +1,26 @@
+{
+  "name": "Client",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome da cliente"
+    },
+    "whatsapp": {
+      "type": "string",
+      "description": "N\u00famero do WhatsApp"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00f5es sobre a cliente"
+    },
+    "last_appointment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do \u00faltimo atendimento"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

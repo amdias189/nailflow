@@ -1,0 +1,33 @@
+{
+  "name": "BlockedTime",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do bloqueio"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Hor\u00e1rio de in\u00edcio (HH:MM)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "Hor\u00e1rio de fim (HH:MM)"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Motivo do bloqueio"
+    },
+    "recurring": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se repete toda semana"
+    }
+  },
+  "required": [
+    "date",
+    "start_time",
+    "end_time"
+  ]
+}

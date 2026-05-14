@@ -1,0 +1,57 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "client_name": {
+      "type": "string",
+      "description": "Nome da cliente"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "ID da cliente vinculada"
+    },
+    "service": {
+      "type": "string",
+      "description": "Servi\u00e7o realizado"
+    },
+    "price": {
+      "type": "number",
+      "description": "Valor do servi\u00e7o"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do agendamento"
+    },
+    "time": {
+      "type": "string",
+      "description": "Hor\u00e1rio do agendamento (HH:MM)"
+    },
+    "duration": {
+      "type": "number",
+      "description": "Dura\u00e7\u00e3o em minutos",
+      "default": 60
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "confirmado",
+        "pendente",
+        "cancelado",
+        "concluido"
+      ],
+      "default": "pendente",
+      "description": "Status do agendamento"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00f5es do agendamento"
+    }
+  },
+  "required": [
+    "client_name",
+    "service",
+    "date",
+    "time"
+  ]
+}
