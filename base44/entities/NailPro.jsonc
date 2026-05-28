@@ -1,0 +1,98 @@
+{
+  "name": "NailPro",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email do usu\u00e1rio dono do perfil"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "Nome do neg\u00f3cio ou sal\u00e3o"
+    },
+    "owner_name": {
+      "type": "string",
+      "description": "Nome da manicure"
+    },
+    "whatsapp": {
+      "type": "string",
+      "description": "WhatsApp de contato"
+    },
+    "slug": {
+      "type": "string",
+      "description": "Link p\u00fablico personalizado (ex: maria-nails)"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o do neg\u00f3cio"
+    },
+    "city": {
+      "type": "string",
+      "description": "Cidade"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Foto de perfil"
+    },
+    "working_days": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Dias de atendimento (0=Dom, 1=Seg, ..., 6=Sab)"
+    },
+    "work_start": {
+      "type": "string",
+      "description": "Hor\u00e1rio de in\u00edcio (HH:MM)"
+    },
+    "work_end": {
+      "type": "string",
+      "description": "Hor\u00e1rio de fim (HH:MM)"
+    },
+    "slot_interval": {
+      "type": "number",
+      "description": "Intervalo entre hor\u00e1rios em minutos",
+      "default": 30
+    },
+    "onboarding_done": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se o onboarding foi conclu\u00eddo"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "expired",
+        "cancelled"
+      ],
+      "default": "trial",
+      "description": "Status da assinatura"
+    },
+    "subscription_plan": {
+      "type": "string",
+      "enum": [
+        "free",
+        "monthly",
+        "yearly"
+      ],
+      "default": "free"
+    },
+    "trial_ends_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de fim do trial"
+    },
+    "subscription_ends_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de fim da assinatura"
+    }
+  },
+  "required": [
+    "user_email",
+    "business_name",
+    "slug"
+  ]
+}

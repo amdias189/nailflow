@@ -2,6 +2,10 @@
   "name": "BlockedTime",
   "type": "object",
   "properties": {
+    "nail_pro_id": {
+      "type": "string",
+      "description": "ID da manicure"
+    },
     "date": {
       "type": "string",
       "format": "date",
@@ -26,6 +30,7 @@
     }
   },
   "required": [
+    "nail_pro_id",
     "date",
     "start_time",
     "end_time"

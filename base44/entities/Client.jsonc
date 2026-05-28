@@ -2,6 +2,10 @@
   "name": "Client",
   "type": "object",
   "properties": {
+    "nail_pro_id": {
+      "type": "string",
+      "description": "ID da manicure dona do cadastro"
+    },
     "name": {
       "type": "string",
       "description": "Nome da cliente"
@@ -10,17 +14,25 @@
       "type": "string",
       "description": "N\u00famero do WhatsApp"
     },
+    "email": {
+      "type": "string",
+      "description": "E-mail opcional"
+    },
     "notes": {
       "type": "string",
-      "description": "Observa\u00e7\u00f5es sobre a cliente"
+      "description": "Observa\u00e7\u00f5es"
     },
-    "last_appointment_date": {
-      "type": "string",
-      "format": "date",
-      "description": "Data do \u00faltimo atendimento"
+    "total_appointments": {
+      "type": "number",
+      "default": 0
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0
     }
   },
   "required": [
+    "nail_pro_id",
     "name"
   ]
 }

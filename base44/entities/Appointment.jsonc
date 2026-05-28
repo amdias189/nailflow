@@ -2,6 +2,10 @@
   "name": "Appointment",
   "type": "object",
   "properties": {
+    "nail_pro_id": {
+      "type": "string",
+      "description": "ID da manicure"
+    },
     "client_name": {
       "type": "string",
       "description": "Nome da cliente"
@@ -10,13 +14,21 @@
       "type": "string",
       "description": "ID da cliente vinculada"
     },
-    "service": {
+    "client_whatsapp": {
       "type": "string",
-      "description": "Servi\u00e7o realizado"
+      "description": "WhatsApp da cliente"
+    },
+    "service_id": {
+      "type": "string",
+      "description": "ID do servi\u00e7o"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Nome do servi\u00e7o"
     },
     "price": {
       "type": "number",
-      "description": "Valor do servi\u00e7o"
+      "description": "Valor cobrado"
     },
     "date": {
       "type": "string",
@@ -25,12 +37,11 @@
     },
     "time": {
       "type": "string",
-      "description": "Hor\u00e1rio do agendamento (HH:MM)"
+      "description": "Hor\u00e1rio (HH:MM)"
     },
     "duration": {
       "type": "number",
-      "description": "Dura\u00e7\u00e3o em minutos",
-      "default": 60
+      "description": "Dura\u00e7\u00e3o em minutos"
     },
     "status": {
       "type": "string",
@@ -40,17 +51,22 @@
         "cancelado",
         "concluido"
       ],
-      "default": "pendente",
-      "description": "Status do agendamento"
+      "default": "pendente"
     },
     "notes": {
       "type": "string",
-      "description": "Observa\u00e7\u00f5es do agendamento"
+      "description": "Observa\u00e7\u00f5es"
+    },
+    "booked_online": {
+      "type": "boolean",
+      "default": false,
+      "description": "Agendado pela p\u00e1gina p\u00fablica"
     }
   },
   "required": [
+    "nail_pro_id",
     "client_name",
-    "service",
+    "service_name",
     "date",
     "time"
   ]
