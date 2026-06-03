@@ -177,12 +177,45 @@ export default function Profile() {
           </div>
           <div>
             <Label>Intervalo entre horários</Label>
-            <div className="flex gap-2 mt-1">
-              {[15, 30, 45, 60].map((m) => (
-                <button key={m} type="button" onClick={() => setForm({ ...form, slot_interval: m })} className={cn("flex-1 py-2 rounded-xl text-sm font-medium border transition-all", form.slot_interval === m ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-muted-foreground")}>
+            <p className="text-xs text-muted-foreground mt-0.5 mb-2">
+              Define a grade de horários disponíveis. O tempo real de cada serviço é definido na duração do serviço.
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              {[15, 30, 45, 60, 90, 120].map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setForm({ ...form, slot_interval: m })}
+                  className={cn(
+                    "py-2 px-3 rounded-xl text-sm font-medium border transition-all",
+                    form.slot_interval === m
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border text-muted-foreground hover:border-primary/40"
+                  )}
+                >
                   {m}min
                 </button>
               ))}
+            </div>
+            <div className="flex items-center gap-2 mt-3">
+              <span className="text-xs text-muted-foreground whitespace-nowrap">Ou digite:</span>
+              <Input
+                type="number"
+                min={5}
+                max={480}
+                step={5}
+                placeholder="Ex: 75"
+                value={[15, 30, 45, 60, 90, 120].includes(form.slot_interval) ? "" : form.slot_interval}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (!isNaN(val) && val >= 5) setForm({ ...form, slot_interval: val });
+                }}
+                className="h-9 w-28"
+              />
+              <span className="text-xs text-muted-foreground">min</span>
+              {!([15, 30, 45, 60, 90, 120].includes(form.slot_interval)) && (
+                <span className="text-xs font-semibold text-primary">{form.slot_interval}min selecionado</span>
+              )}
             </div>
           </div>
         </div>
