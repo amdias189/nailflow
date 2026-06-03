@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Sparkles, LogOut, ExternalLink, Copy } from "lucide-react";
+import { Sparkles, LogOut, ExternalLink, Copy, Plus, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { cn } from "@/lib/utils";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const DAYS = [
   { label: "Dom", value: 0 }, { label: "Seg", value: 1 }, { label: "Ter", value: 2 },
@@ -16,9 +17,40 @@ const DAYS = [
 
 export default function Profile() {
   const { nailPro, updateNailPro } = useNailPro();
+  const queryClient = useQueryClient();
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState("profile");
+  const [newBreak, setNewBreak] = useState({ start_time: "12:00", end_time: "13:00", reason: "" });
+
+  const { data: recurringBlocks = [] } = useQuery({
+    queryKey: ["recurring-blocks", nailPro?.id],
+    queryFn: () => base44.entities.BlockedTime.filter({ nail_pro_id: nailPro.id, recurring: true }, "start_time", 50),
+    enabled: !!nailPro?.id,
+  });
+
+  const addBlockMutation = useMutation({
+    mutationFn: (data) => base44.entities.BlockedTime.create(data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["recurring-blocks"] }); setNewBreak({ start_time: "12:00", end_time: "13:00", reason: "" }); toast.success("Intervalo adicionado!"); },
+  });
+
+  const deleteBlockMutation = useMutation({
+    mutationFn: (id) => base44.entities.BlockedTime.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["recurring-blocks"] }); toast.success("Intervalo removido!"); },
+  });
+
+  const handleAddBreak = () => {
+    if (!newBreak.start_time || !newBreak.end_time) return;
+    // Use a fixed reference date; recurring flag makes the date irrelevant for display
+    addBlockMutation.mutate({
+      nail_pro_id: nailPro.id,
+      date: "2000-01-01",
+      start_time: newBreak.start_time,
+      end_time: newBreak.end_time,
+      reason: newBreak.reason || "Intervalo",
+      recurring: true,
+    });
+  };
 
   useEffect(() => {
     if (nailPro && !form) {
@@ -82,7 +114,7 @@ export default function Profile() {
 
       {/* Tabs */}
       <div className="flex gap-1 bg-muted rounded-xl p-1">
-        {[{ k: "profile", l: "Perfil" }, { k: "schedule", l: "Horários" }].map((t) => (
+        {[{ k: "profile", l: "Perfil" }, { k: "schedule", l: "Horários" }, { k: "breaks", l: "Intervalos" }].map((t) => (
           <button key={t.k} onClick={() => setTab(t.k)} className={cn("flex-1 py-2 text-sm font-medium rounded-lg transition-all", tab === t.k ? "bg-card text-foreground shadow-sm" : "text-muted-foreground")}>
             {t.l}
           </button>
@@ -156,9 +188,64 @@ export default function Profile() {
         </div>
       )}
 
-      <Button onClick={handleSave} disabled={saving} className="w-full bg-primary hover:bg-primary/90 rounded-xl">
-        {saving ? "Salvando..." : "Salvar alterações"}
-      </Button>
+      {tab === "breaks" && (
+        <div className="bg-card rounded-2xl p-5 border border-border shadow-sm space-y-4">
+          <div>
+            <p className="text-sm font-semibold text-foreground">Intervalos fixos semanais</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Esses horários serão bloqueados todos os dias automaticamente.</p>
+          </div>
+
+          {/* List */}
+          {recurringBlocks.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-4">Nenhum intervalo cadastrado</p>
+          ) : (
+            <div className="space-y-2">
+              {recurringBlocks.map((b) => (
+                <div key={b.id} className="flex items-center justify-between p-3 bg-accent/40 rounded-xl">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{b.start_time} – {b.end_time}</p>
+                    {b.reason && <p className="text-xs text-muted-foreground">{b.reason}</p>}
+                  </div>
+                  <button
+                    onClick={() => deleteBlockMutation.mutate(b.id)}
+                    className="p-2 rounded-lg hover:bg-destructive/10 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add new */}
+          <div className="border border-dashed border-border rounded-xl p-4 space-y-3">
+            <p className="text-xs font-medium text-muted-foreground">Adicionar intervalo</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">Início</Label>
+                <Input type="time" value={newBreak.start_time} onChange={(e) => setNewBreak({ ...newBreak, start_time: e.target.value })} className="mt-1 h-9" />
+              </div>
+              <div>
+                <Label className="text-xs">Fim</Label>
+                <Input type="time" value={newBreak.end_time} onChange={(e) => setNewBreak({ ...newBreak, end_time: e.target.value })} className="mt-1 h-9" />
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs">Motivo (opcional)</Label>
+              <Input value={newBreak.reason} onChange={(e) => setNewBreak({ ...newBreak, reason: e.target.value })} placeholder="Ex: Almoço, Pausa..." className="mt-1 h-9" />
+            </div>
+            <Button onClick={handleAddBreak} disabled={addBlockMutation.isPending} variant="outline" className="w-full rounded-xl gap-1.5">
+              <Plus className="w-4 h-4" /> Adicionar intervalo
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {tab !== "breaks" && (
+        <Button onClick={handleSave} disabled={saving} className="w-full bg-primary hover:bg-primary/90 rounded-xl">
+          {saving ? "Salvando..." : "Salvar alterações"}
+        </Button>
+      )}
     </div>
   );
 }
